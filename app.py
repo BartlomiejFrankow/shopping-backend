@@ -26,7 +26,6 @@ class ShoppingNotes(db.Model):
         self.title = title
         self.body = body
 
-
 class ShoppingNoteSchema(ma.Schema):
     class Meta:
         fields = ('id', 'title', 'body', 'date')
@@ -44,15 +43,16 @@ def get_shopping_list():
         }
     )
 
-@app.route('/addShoppingNotes', methods = ['POST'])
-def add_shopping_notes():
+@app.route('/addShoppingNote', methods = ['POST'])
+def add_shopping_note():
     title = request.json['title']
     body = request.json['body']
 
-    notes = ShoppingNotes(title, body)
-    db.session.add(notes)
+    note = ShoppingNotes(title, body)   
+
+    db.session.add(note)
     db.session.commit()
-    return shopping_note_schema.jsonify()
+    return shopping_note_schema.jsonify(note)
 
 if __name__ == "__main__":
     app.run(debug = True)
