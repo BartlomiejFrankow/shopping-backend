@@ -36,12 +36,10 @@ shopping_notes_schema = ShoppingNoteSchema(many = True)
 
 
 @app.route('/getShoppingNotes', methods = ['GET'])
-def get_shopping_list():
-    return jsonify(
-        {
-            "Hello" : "World"
-        }
-    )
+def get_shopping_notes():
+    all_shopping_notes = ShoppingNotes.query.all()
+    return jsonify(shopping_notes_schema.dump(all_shopping_notes))
+
 
 @app.route('/addShoppingNote', methods = ['POST'])
 def add_shopping_note():
@@ -55,4 +53,4 @@ def add_shopping_note():
     return shopping_note_schema.jsonify(note)
 
 if __name__ == "__main__":
-    app.run(debug = True)
+    app.run(debug = False)
