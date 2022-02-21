@@ -36,19 +36,22 @@ shopping_note_schema = ShoppingNoteSchema()
 shopping_notes_schema = ShoppingNoteSchema(many = True)
 
 
-@app.route('/getShoppingNotes', methods = ['GET'])
+# Get all notes
+@app.route('/getNotes', methods = ['GET'])
 def get_shopping_notes():
     all_shopping_notes = ShoppingNotes.query.all()
     return jsonify(shopping_notes_schema.dump(all_shopping_notes))
 
 
-@app.route('/getShoppingNotes/<id>/', methods = ['GET'])
+# Get single note
+@app.route('/getNote/<id>/', methods = ['GET'])
 def note_detail(id):
     note = ShoppingNotes.query.get(id)
     return shopping_note_schema.jsonify(note)
 
 
-@app.route('/addShoppingNote', methods = ['POST'])
+# Add note
+@app.route('/addNote', methods = ['POST'])
 def add_shopping_note():
     title = request.json['title']
     body = request.json['body']
@@ -58,6 +61,33 @@ def add_shopping_note():
     db.session.add(note)
     db.session.commit()
     return shopping_note_schema.jsonify(note)
+
+
+# Update note
+@app.route('/updateNote/<id>/', methods = ['PUT'])
+def update_note(id):
+    note = ShoppingNotes.query.get(id)
+
+    title = request.json['title']
+    body = request.json['body']
+
+    note.title = title
+    note.body = body
+
+    db.session.commit()
+    return shopping_note_schema.jsonify(note)
+
+
+# Delete note
+@app.route('/delete/<id>/', methods = ['DELETE'])
+def delete_note(id):
+    note = ShoppingNotes.query.get(id)
+
+    db.session.delete(note)
+    db.session.commit()
+
+    return shopping_note_schema.jsonify(note)
+
 
 if __name__ == "__main__":
     app.run(debug = True)
